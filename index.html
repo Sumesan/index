@@ -169,24 +169,32 @@
          }
 
         function generateGuestFields() {
-            var numGuests = parseInt(document.getElementById('num_guests').value);
-            var guestFieldsContainer = document.getElementById('guestFieldsContainer');
-            guestFieldsContainer.innerHTML = '';
+    var numGuests = parseInt(document.getElementById('num_guests').value);
+    var guestFieldsContainer = document.getElementById('guestFieldsContainer');
+    guestFieldsContainer.innerHTML = '';
 
-            for (var i = 1; i <= numGuests; i++) {
-                var guestFieldset = document.createElement('fieldset');
-                guestFieldset.innerHTML = `
-                    <legend>Guest ${i} Information</legend>
-                    <div>
-                        <label for="guest_name_${i}">Name:</label>
-                        <input type="text" id="guest_name_${i}" name="guest_name_${i}">
-                    </div>
-                    <!-- Other guest fields -->
-                `;
+    for (var i = 1; i <= numGuests; i++) {
+        var guestFieldset = document.createElement('fieldset');
+        guestFieldset.innerHTML = `
+            <legend>Guest ${i} Information</legend>
+            <div>
+                <label for="guest_name_${i}">Name:</label>
+                <input type="text" id="guest_name_${i}" name="guest_name_${i}">
+            </div>
+            <div>
+                <label for="guest_email_${i}">Email:</label>
+                <input type="email" id="guest_email_${i}" name="guest_email_${i}">
+            </div>
+            <div>
+                <label for="guest_mobile_${i}">Mobile:</label>
+                <input type="tel" id="guest_mobile_${i}" name="guest_mobile_${i}">
+            </div>
+            <!-- Add other guest fields here -->
+        `;
+        guestFieldsContainer.appendChild(guestFieldset);
+    }
+}
 
-                guestFieldsContainer.appendChild(guestFieldset);
-            }
-        }
 
         function toggleDriverTimes(selectElement, index) {
             var driverTimesDiv = document.getElementById(`driverTimes_${index}`);
