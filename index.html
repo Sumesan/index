@@ -175,20 +175,17 @@
 
     for (var i = 1; i <= numGuests; i++) {
         var guestFieldset = document.createElement('fieldset');
-        guestFieldset.innerHTML =  `
-                    <div class="guest-section">
-                        <h2>Guest ${i} Information</h2>
-                        <div class="form-group">
-                            <label for="guest_name_${i}">Guest Name (${i}):</label>
-                            <span class="subtitle">Name of the guest</span>
-                            <input type="text" id="guest_name_${i}" name="Guest Name (${i})">
-                        </div>
-                        <div class="form-group">
-                            <label for="guest_email_${i}">Guest Email Address (${i}):</label>
-                            <span class="subtitle">Email address of the guest</span>
-                            <input type="email" id="guest_email_${i}" name="Guest Email Address (${i})">
-                        </div>
-                        <div class="form-group">
+        guestFieldset.innerHTML = `
+            <legend>Guest ${i} Information</legend>
+            <div>
+                <label for="guest_name_${i}">Name:</label>
+                <input type="text" id="guest_name_${i}" name="guest_name_${i}">
+            </div>
+            <div>
+                <label for="guest_email_${i}">Email:</label>
+                <input type="email" id="guest_email_${i}" name="guest_email_${i}">
+            </div>
+            <div class="form-group">
                             <label for="guest_mobile_${i}">Guest Mobile Number (${i}):</label>
                             <div style="display: flex; align-items: center;">
                                 <select id="country_code_${i}" name="Country Code (${i})" onchange="toggleCustomDialingCodeInput(this, ${i})">
