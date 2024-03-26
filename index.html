@@ -175,21 +175,128 @@
 
     for (var i = 1; i <= numGuests; i++) {
         var guestFieldset = document.createElement('fieldset');
-        guestFieldset.innerHTML = `
-            <legend>Guest ${i} Information</legend>
-            <div>
-                <label for="guest_name_${i}">Name:</label>
-                <input type="text" id="guest_name_${i}" name="guest_name_${i}">
-            </div>
-            <div>
-                <label for="guest_email_${i}">Email:</label>
-                <input type="email" id="guest_email_${i}" name="guest_email_${i}">
-            </div>
-            <div>
-                <label for="guest_mobile_${i}">Mobile:</label>
-                <input type="tel" id="guest_mobile_${i}" name="guest_mobile_${i}">
-            </div>
-            <!-- Add other guest fields here -->
+        guestFieldset.innerHTML =  `
+                    <div class="guest-section">
+                        <h2>Guest ${i} Information</h2>
+                        <div class="form-group">
+                            <label for="guest_name_${i}">Guest Name (${i}):</label>
+                            <span class="subtitle">Name of the guest</span>
+                            <input type="text" id="guest_name_${i}" name="Guest Name (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest_email_${i}">Guest Email Address (${i}):</label>
+                            <span class="subtitle">Email address of the guest</span>
+                            <input type="email" id="guest_email_${i}" name="Guest Email Address (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest_mobile_${i}">Guest Mobile Number (${i}):</label>
+                            <div style="display: flex; align-items: center;">
+                                <select id="country_code_${i}" name="Country Code (${i})" onchange="toggleCustomDialingCodeInput(this, ${i})">
+                                    <option value="1">+1 (USA)</option>
+                                    <option value="44">+44 (UK)</option>
+                                    <option value="27">+27 (SA)</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <input type="tel" id="guest_mobile_${i}" name="Guest Mobile Number (${i})" pattern="[0-9]{10}" style="flex: 1;">
+                            </div>
+                        </div>
+                        <div class="form-group" id="custom_dialing_code_${i}" style="display: none;">
+                            <label for="custom_dialing_code_input_${i}">Custom Dialing Code:</label>
+                            <span class="subtitle">Custom dialing code if 'Other' is selected</span>
+                            <input type="text" id="custom_dialing_code_input_${i}" name="Custom Dialing Code (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="sa_phone_${i}">Does the guest require a South African phone? (${i}):</label>
+                            <span class="subtitle">Whether the guest requires a South African phone or not</span>
+                            <select id="sa_phone_${i}" name="Does the guest require a South African phone? (${i})">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_airline_${i}">Arrival Airline (${i}):</label>
+                            <span class="subtitle">Name of the airline for arrival</span>
+                            <input type="text" id="arrival_airline_${i}" name="Arrival Airline (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_flight_${i}">Arrival Flight Number (${i}):</label>
+                            <span class="subtitle">Flight number for arrival</span>
+                            <input type="text" id="arrival_flight_${i}" name="Arrival Flight Number (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_date_${i}">Date of Flight Arrival (${i}):</label>
+                            <span class="subtitle">Date of arrival in South Africa</span> <br>
+                            <input type="date" id="arrival_date_${i}" name="Date of Flight Arrival (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_time_${i}">Time of Flight Arrival (${i}):</label>
+                            <span class="subtitle">Time of arrival in South Africa</span> <br>
+                            <input type="time" id="arrival_time_${i}" name="Time of Flight Arrival (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_airline_${i}">Departure Airline (${i}):</label>
+                            <span class="subtitle">Name of the airline for departure</span>
+                            <input type="text" id="departure_airline_${i}" name="Departure Airline (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_flight_${i}">Departure Flight Number (${i}):</label>
+                            <span class="subtitle">Flight number for departure</span>
+                            <input type="text" id="departure_flight_${i}" name="Departure Flight Number (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_date_${i}">Date of Flight Departure (${i}):</label>
+                            <span class="subtitle">Date of departure from South Africa</span> <br>
+                            <input type="date" id="departure_date_${i}" name="Date of Flight Departure (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_time_${i}">Time of Flight Departure (${i}):</label>
+                            <span class="subtitle">Time of departure from South Africa</span> <br>
+                            <input type="time" id="departure_time_${i}" name="Time of Flight Departure (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="hotel_${i}">Name of the Hotel (${i}):</label>
+                            <span class="subtitle">Name of the hotel where the guest will stay</span>
+                            <input type="text" id="hotel_${i}" name="Name of the Hotel (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="driver_required_${i}">Driver Required? (${i}):</label>
+                            <span class="subtitle">Whether a driver is required for the guest</span>
+                            <select id="driver_required_${i}" name="Driver Required? (${i})" onchange="toggleDriverTimes(this, ${i})">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                        <div id="driverTimes_${i}" style="display: none;">
+                            <div class="form-group">
+                                <label for="daily_collection_time_${i}">Daily Collection Time (${i}):</label>
+                                <span class="subtitle">Time for daily collection from the hotel</span> <br>
+                                <input type="time" id="daily_collection_time_${i}" name="Daily Collection Time (${i})">
+                            </div>
+                            <div class="form-group">
+                                <label for="daily_dropoff_time_${i}">Daily Drop off Time (${i}):</label>
+                                <span class="subtitle">Time for daily drop off at hotel</span> <br>
+                                <input type="time" id="daily_dropoff_time_${i}" name="Daily Drop off Time (${i})">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="special_requirements_${i}">Special Requirements (${i}):</label>
+                            <span class="subtitle">Dietary requirements</span> <br>
+                            <textarea id="special_requirements_${i}" name="Special Requirements (${i})" rows="4"></textarea> <p>
+                            <label for="activities_interested_${i}">Activities Interested In (${i}):</label>
+                            <span class="subtitle">Activities the guest is interested in</span> <br>
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="activity_ushaka_${i}" name="Activities Interested In (${i})[]" value="Ushaka Marine World (Shark Cage Diving/Snorkeling)">
+                                <label for="activity_ushaka_${i}">Ushaka Marine World (Shark Cage Diving/Snorkeling)</label> <br>
+                                <input type="checkbox" id="activity_zulu_${i}" name="Activities Interested In (${i})[]" value="Zulu Kingdom Tour">
+                                <label for="activity_zulu_${i}">Zulu Kingdom Tour</label> <br>
+                                <input type="checkbox" id="activity_segway_${i}" name="Activities Interested In (${i})[]" value="Segway Tour">
+                                <label for="activity_segway_${i}">Segway Tour</label> <br>
+                                <input type="checkbox" id="activity_safari_${i}" name="Activities Interested In (${i})[]" value="Safari Tour">
+                                <label for="activity_safari_${i}">Safari Tour</label>
+                            </div>
+                        </div>
+                    </div>
+            
         `;
         guestFieldsContainer.appendChild(guestFieldset);
     }
