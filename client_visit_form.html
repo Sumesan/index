@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Visit Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            max-width: 200px;
+            display: block;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        select {
+            width: calc(100% - 12px);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        select#country_code_1,
+        select#country_code_2,
+        select#country_code_3,
+        select#country_code_4,
+        select#country_code_5,
+        select#country_code_6,
+        select#country_code_7,
+        select#country_code_8 {
+            width: calc(30% - 5px);
+            margin-right: 10px;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .success-message {
+            text-align: center;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="logo" src="https://www.outworx.co.za/wp-content/uploads/2022/08/Outworx_Logo_Main.png" alt="Outworx Logo">
+        <h2>Client Visit Information Form</h2>
+        <form id="clientVisitForm" onsubmit="submitForm(event)">
+            <div class="form-group">
+                <label for="outworx_contact">Outworx Point of Contact:</label>
+                <input type="text" id="outworx_contact" name="outworx_contact">
+            </div>
+            <div class="form-group">
+                <label for="campaign">Campaign:</label>
+                <input type="text" id="campaign" name="campaign">
+            </div>
+            <div class="form-group">
+                <label for="num_guests">Number of Guests:</label>
+                <select id="num_guests" name="num_guests" onchange="generateGuestFields()">
+                    <option value="">Select</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+            <div id="guestFieldsContainer"></div>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="successMessage" class="success-message" style="display: none;">Form submitted successfully!</div>
+    </div>
+
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get data from the form
+            var formData = {
+                "outworx_contact": document.getElementById('outworx_contact').value,
+                "campaign": document.getElementById('campaign').value,
+                "num_guests": document.getElementById('num_guests').value,
+                "guests": []
+            };
+
+            // Add guest information to formData
+            var numGuests = parseInt(formData.num_guests);
+            for (var i = 1; i <= numGuests; i++) {
+                var guestData = {
+                    "name": document.getElementById(`guest_name_${i}`).value,
+                    "email": document.getElementById(`guest_email_${i}`).value,
+                    "mobile": document.getElementById(`guest_mobile_${i}`).value,
+                    "sa_phone": document.getElementById(`sa_phone_${i}`).value,
+                    "arrival_airline": document.getElementById(`arrival_airline_${i}`).value,
+                    "arrival_flight": document.getElementById(`arrival_flight_${i}`).value,
+                    "arrival_date": document.getElementById(`arrival_date_${i}`).value,
+                    "arrival_time": document.getElementById(`arrival_time_${i}`).value,
+                    "departure_airline": document.getElementById(`departure_airline_${i}`).value,
+                    "departure_flight": document.getElementById(`departure_flight_${i}`).value,
+                    "departure_date": document.getElementById(`departure_date_${i}`).value,
+                    "departure_time": document.getElementById(`departure_time_${i}`).value,
+                    "hotel": document.getElementById(`hotel_${i}`).value,
+                    "driver_required": document.getElementById(`driver_required_${i}`).value,
+                    "special_requirements": document.getElementById(`special_requirements_${i}`).value,
+                    "activities_interested": Array.from(document.querySelectorAll(`#activities_interested_${i} input[type=checkbox]:checked`)).map(function(element) {
+                        return element.value;
+                    })
+                };
+                formData.guests.push(guestData);
+            }
+
+            // Send formData as JSON using fetch API
+            fetch('https://prod-105.westeurope.logic.azure.com:443/workflows/ba96034e3d084c9cbeac129011bf7c31/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=y_f3WsxSVyHGOPsoZwbQV_w2Nmb-1eQ2yolV9AptyA8', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                // Handle response if needed
+                console.log('Response received:', response);
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                // Reset form
+                document.getElementById('clientVisitForm').reset();
+                // Hide success message after 5 seconds
+                setTimeout(function() {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 5000);
+            })
+            .catch(error => {
+                // Handle error if needed
+                console.error('Error occurred:', error);
+            });
+        }
+
+        function generateGuestFields() {
+            var numGuests = parseInt(document.getElementById('num_guests').value);
+            var guestFieldsContainer = document.getElementById('guestFieldsContainer');
+            guestFieldsContainer.innerHTML = '';
+
+            for (var i = 1; i <= numGuests; i++) {
+                var guestFieldset = document.createElement('fieldset');
+                guestFieldset.innerHTML = `
+                    <legend>Guest ${i} Information</legend>
+                    <div>
+                        <label for="guest_name_${i}">Name:</label>
+                        <input type="text" id="guest_name_${i}" name="guest_name_${i}">
+                    </div>
+                    <!-- Other guest fields -->
+                `;
+
+                guestFieldsContainer.appendChild(guestFieldset);
+            }
+        }
+
+        function toggleDriverTimes(selectElement, index) {
+            var driverTimesDiv = document.getElementById(`driverTimes_${index}`);
+            if (selectElement.value === "yes") {
+                driverTimesDiv.style.display = "block";
+            } else {
+                driverTimesDiv.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
