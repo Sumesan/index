@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Client Visit Information</title>
+    <title>Client Visit Information</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,7 +25,7 @@
             margin: 0 auto;
             padding-bottom: 20px;
         }
-        h2 {
+        h1 {
             text-align: center;
             color: #333;
         }
@@ -75,33 +75,34 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .success-message {
-            text-align: center;
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 20px;
+        .checkbox-container input[type="checkbox"],
+        .checkbox-container label {
+            display: inline-block;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <img class="logo" src="https://www.outworx.co.za/wp-content/uploads/2022/08/Outworx_Logo_Main.png" alt="Outworx Logo">
-        <h2>Client Visit Information Form</h2>
-        <form id="clientVisitForm" onsubmit="submitForm(event)">
-            <div class="form-group">
-                <label for="outworx_contact">Outworx Point of Contact:</label>
-                <input type="text" id="outworx_contact" name="outworx_contact">
+        <h1>Client Visit Information Form</h1>
+        <form id="registrationForm" onsubmit="submitForm(event)">
+        <div class="form-group">
+                <label for="outworx_contact">Outworx Point of Contact</label>
+                <span class="subtitle">The person's name from Outworx that you are in regular contact with</span>
+                <input type="text" id="outworx_contact" name="Outworx Point of Contact">
             </div>
+
             <div class="form-group">
                 <label for="campaign">Campaign:</label>
-                <input type="text" id="campaign" name="campaign">
+                <span class="subtitle">Name of the business</span>
+                <input type="text" id="campaign" name="Campaign">
             </div>
+
             <div class="form-group">
                 <label for="num_guests">Number of Guests:</label>
-                <select id="num_guests" name="num_guests" onchange="generateGuestFields()">
+                <span class="subtitle">Number of guests attending</span>
+                <select id="num_guests" name="Number of Guests">
                     <option value="">Select</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -113,79 +114,37 @@
                     <option value="8">8</option>
                 </select>
             </div>
+
             <div id="guestFieldsContainer"></div>
-            <button type="submit">Submit</button>
-    </form>
+
+            <button type="submit" id="submitButton">Submit</button>
+        </form>
+    </div>
 
     <script>
-        function submitForm(event) {
-            event.preventDefault(); // Prevent default form submission
-
-              // Get data from the form
-            var formData = {
-                "outworx_contact": document.getElementById('outworx_contact').value,
-                "campaign": document.getElementById('campaign').value,
-                "num_guests": document.getElementById('num_guests').value,
-                "guests": []
-            };
-
-            // Add guest information to formData
-            var numGuests = parseInt(formData.num_guests);
-            for (var i = 1; i <= numGuests; i++) {
-                var guestData = {
-                    "name": document.getElementById(`guest_name_${i}`).value,
-                    "email": document.getElementById(`guest_email_${i}`).value,
-                    "mobile": document.getElementById(`guest_mobile_${i}`).value,
-                    "sa_phone": document.getElementById(`sa_phone_${i}`).value,
-                    "arrival_airline": document.getElementById(`arrival_airline_${i}`).value,
-                    "arrival_flight": document.getElementById(`arrival_flight_${i}`).value,
-                    "arrival_date": document.getElementById(`arrival_date_${i}`).value,
-                    "arrival_time": document.getElementById(`arrival_time_${i}`).value,
-                    "departure_airline": document.getElementById(`departure_airline_${i}`).value,
-                    "departure_flight": document.getElementById(`departure_flight_${i}`).value,
-                    "departure_date": document.getElementById(`departure_date_${i}`).value,
-                    "departure_time": document.getElementById(`departure_time_${i}`).value,
-                    "hotel": document.getElementById(`hotel_${i}`).value,
-                    "driver_required": document.getElementById(`driver_required_${i}`).value,
-                    "special_requirements": document.getElementById(`special_requirements_${i}`).value,
-                    "activities_interested": Array.from(document.querySelectorAll(`#activities_interested_${i} input[type=checkbox]:checked`)).map(function(element) {
-                        return element.value;
-                    })
-                };
-                formData.guests.push(guestData);
-            }
-
-                body: JSON.stringify(Object.fromEntries(formData))
-            })
-            .then(response => {
-                // Handle response if needed
-                console.log('Response received:', response);
-            })
-            .catch(error => {
-                // Handle error if needed
-                console.error('Error occurred:', error);
-            });
-        }
-         }
+    document.getElementById("num_guests").addEventListener("change", generateGuestFields);
 
         function generateGuestFields() {
-    var numGuests = parseInt(document.getElementById('num_guests').value);
-    var guestFieldsContainer = document.getElementById('guestFieldsContainer');
-    guestFieldsContainer.innerHTML = '';
+            var numGuests = parseInt(document.getElementById("num_guests").value);
+            var guestFieldsContainer = document.getElementById("guestFieldsContainer");
+            guestFieldsContainer.innerHTML = "";
 
-    for (var i = 1; i <= numGuests; i++) {
-        var guestFieldset = document.createElement('fieldset');
-        guestFieldset.innerHTML = `
-            <legend>Guest ${i} Information</legend>
-            <div>
-                <label for="guest_name_${i}">Name:</label>
-                <input type="text" id="guest_name_${i}" name="guest_name_${i}">
-            </div>
-            <div>
-                <label for="guest_email_${i}">Email:</label>
-                <input type="email" id="guest_email_${i}" name="guest_email_${i}">
-            </div>
-            <div class="form-group">
+            for (var i = 1; i <= numGuests; i++) {
+                var guestDiv = document.createElement("div");
+                guestDiv.innerHTML = `
+                    <div class="guest-section">
+                        <h2>Guest ${i} Information</h2>
+                        <div class="form-group">
+                            <label for="guest_name_${i}">Guest Name (${i}):</label>
+                            <span class="subtitle">Name of the guest</span>
+                            <input type="text" id="guest_name_${i}" name="Guest Name (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest_email_${i}">Guest Email Address (${i}):</label>
+                            <span class="subtitle">Email address of the guest</span>
+                            <input type="email" id="guest_email_${i}" name="Guest Email Address (${i})">
+                        </div>
+                        <div class="form-group">
                             <label for="guest_mobile_${i}">Guest Mobile Number (${i}):</label>
                             <div style="display: flex; align-items: center;">
                                 <select id="country_code_${i}" name="Country Code (${i})" onchange="toggleCustomDialingCodeInput(this, ${i})">
@@ -293,21 +252,90 @@
                             </div>
                         </div>
                     </div>
-            
-        `;
-        guestFieldsContainer.appendChild(guestFieldset);
-    }
-}
-
-
-        function toggleDriverTimes(selectElement, index) {
-            var driverTimesDiv = document.getElementById(`driverTimes_${index}`);
-            if (selectElement.value === "yes") {
-                driverTimesDiv.style.display = "block";
-            } else {
-                driverTimesDiv.style.display = "none";
+                `;
+                guestFieldsContainer.appendChild(guestDiv);
             }
         }
+        
+        function submitForm(event) {
+    event.preventDefault(); // Prevent form submission
+    
+    // Get values from the main form
+    var outworxContact = document.getElementById("outworx_contact").value;
+    var campaign = document.getElementById("campaign").value;
+    var numGuests = document.getElementById("num_guests").value;
+    
+    // Array to store guest information
+    var guestInfo = [];
+    
+    // Loop through each guest section
+    for (var i = 1; i <= numGuests; i++) {
+        var guest = {
+            name: document.getElementById("guest_name_" + i).value,
+            email: document.getElementById("guest_email_" + i).value,
+            countryCode: document.getElementById("country_code_" + i).value,
+            mobile: document.getElementById("guest_mobile_" + i).value,
+            saPhone: document.getElementById("sa_phone_" + i).value,
+            arrivalAirline: document.getElementById("arrival_airline_" + i).value,
+            arrivalFlightNumber: document.getElementById("arrival_flight_" + i).value,
+            arrivalDate: document.getElementById("arrival_date_" + i).value,
+            arrivalTime: document.getElementById("arrival_time_" + i).value,
+            departureAirline: document.getElementById("departure_airline_" + i).value,
+            departureFlightNumber: document.getElementById("departure_flight_" + i).value,
+            departureDate: document.getElementById("departure_date_" + i).value,
+            departureTime: document.getElementById("departure_time_" + i).value,
+            hotel: document.getElementById("hotel_" + i).value,
+            driverRequired: document.getElementById("driver_required_" + i).value,
+            specialRequirements: document.getElementById("special_requirements_" + i).value,
+            activitiesInterested: getActivitiesInterested(i)
+        };
+        
+        // Check if driver times are required
+        if (guest.driverRequired === "yes") {
+            guest.dailyCollectionTime = document.getElementById("daily_collection_time_" + i).value;
+            guest.dailyDropoffTime = document.getElementById("daily_dropoff_time_" + i).value;
+        }
+        
+        // Push guest information to array
+        guestInfo.push(guest);
+    }
+    
+    // Object to hold all form data
+    var formData = {
+        outworxContact: outworxContact,
+        campaign: campaign,
+        numGuests: numGuests,
+        guests: guestInfo
+    };
+
+    // Send the data as JSON using fetch API
+    fetch('https://prod-105.westeurope.logic.azure.com:443/workflows/ba96034e3d084c9cbeac129011bf7c31/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=y_f3WsxSVyHGOPsoZwbQV_w2Nmb-1eQ2yolV9AptyA8', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        // Handle response if needed
+        console.log('Response received:', response);
+    })
+    .catch(error => {
+        // Handle error if needed
+        console.error('Error occurred:', error);
+    });
+}
+
+// Function to get activities interested for a particular guest
+function getActivitiesInterested(index) {
+    var checkboxes = document.querySelectorAll('input[name="Activities Interested In (' + index + ')[]"]:checked');
+    var activities = [];
+    checkboxes.forEach(function(checkbox) {
+        activities.push(checkbox.value);
+    });
+    return activities;
+}
+
     </script>
 </body>
 </html>
