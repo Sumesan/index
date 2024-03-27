@@ -120,10 +120,7 @@
             <button type="submit" id="submitButton">Submit</button>
         </form>
     </div>
-    <div id="submissionMessage" style="display: none; text-align: center; margin-top: 20px;">
-        <p>Form response submitted successfully!</p>
-    </div>
-
+    
     <script>
     document.getElementById("num_guests").addEventListener("change", generateGuestFields);
 
@@ -262,9 +259,7 @@
         
         function submitForm(event) {
     event.preventDefault(); // Prevent form submission
-       // Show submission message
-            document.getElementById("submissionMessage").style.display = "block";
-        }
+      
     
     // Get values from the main form
     var outworxContact = document.getElementById("outworx_contact").value;
@@ -313,33 +308,54 @@
         numGuests: numGuests,
         guests: guestInfo
     };
+    
+    // Convert formData to JSON
+    var jsonData = JSON.stringify(formData);
 
-    // Send the data as JSON using fetch API
-    fetch('https://prod-105.westeurope.logic.azure.com:443/workflows/ba96034e3d084c9cbeac129011bf7c31/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=y_f3WsxSVyHGOPsoZwbQV_w2Nmb-1eQ2yolV9AptyA8', {
+    // Send jsonData to Power Automate
+    // You will need to implement this part according to your specific setup
+    sendJsonToPowerAutomate(jsonData);
+}
+
+// Function to get activities interested in
+function getActivitiesInterested(i) {
+    var activities = [];
+    var checkboxes = document.getElementsByName("Activities Interested In (" + i + ")[]");
+    checkboxes.forEach(function(checkbox) {
+        if (checkbox.checked) {
+            activities.push(checkbox.value);
+        }
+    });
+    return activities;
+}
+// Function to send JSON data to Power Automate
+function sendJsonToPowerAutomate(jsonData) {
+    // URL of the Power Automate HTTP endpoint
+    var endpoint = "https://prod-105.westeurope.logic.azure.com:443/workflows/ba96034e3d084c9cbeac129011bf7c31/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=y_f3WsxSVyHGOPsoZwbQV_w2Nmb-1eQ2yolV9AptyA8";
+
+    // Fetch options
+    var requestOptions = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
-    })
-    .then(response => {
-        // Handle response if needed
-        console.log('Response received:', response);
-    })
-    .catch(error => {
-        // Handle error if needed
-        console.error('Error occurred:', error);
-    });
-}
+        body: jsonData
+    };
 
-// Function to get activities interested for a particular guest
-function getActivitiesInterested(index) {
-    var checkboxes = document.querySelectorAll('input[name="Activities Interested In (' + index + ')[]"]:checked');
-    var activities = [];
-    checkboxes.forEach(function(checkbox) {
-        activities.push(checkbox.value);
-    });
-    return activities;
+    // Send HTTP POST request
+    fetch(endpoint, requestOptions)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response from Power Automate:', data);
+        })
+        .catch(error => {
+            console.error('Error sending data to Power Automate:', error);
+        });
 }
 
     </script>
