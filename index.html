@@ -120,6 +120,9 @@
             <button type="submit" id="submitButton">Submit</button>
         </form>
     </div>
+    <div id="submissionMessage" style="display: none; text-align: center; margin-top: 20px;">
+        <p>Form response submitted successfully!</p>
+    </div>
 
     <script>
     document.getElementById("num_guests").addEventListener("change", generateGuestFields);
@@ -259,6 +262,9 @@
         
         function submitForm(event) {
     event.preventDefault(); // Prevent form submission
+       // Show submission message
+            document.getElementById("submissionMessage").style.display = "block";
+        }
     
     // Get values from the main form
     var outworxContact = document.getElementById("outworx_contact").value;
