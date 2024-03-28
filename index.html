@@ -256,6 +256,23 @@
                 guestFieldsContainer.appendChild(guestDiv);
             }
         }
+         function toggleDriverTimes(selectElement, index) {
+            var driverTimesDiv = document.getElementById(`driverTimes_${index}`);
+            if (selectElement.value === "yes") {
+                driverTimesDiv.style.display = "block";
+            } else {
+                driverTimesDiv.style.display = "none";
+            }
+        }
+
+        function toggleCustomDialingCodeInput(selectElement, index) {
+            var customDialingCodeInput = document.getElementById(`custom_dialing_code_${index}`);
+            if (selectElement.value === "other") {
+                customDialingCodeInput.style.display = "block";
+            } else {
+                customDialingCodeInput.style.display = "none";
+            }
+        }
         
         function submitForm(event) {
     event.preventDefault(); // Prevent form submission
