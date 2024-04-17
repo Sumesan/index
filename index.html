@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Visit Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            max-width: 200px;
+            display: block;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        select {
+            width: calc(100% - 12px);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        select#country_code_1,
+        select#country_code_2,
+        select#country_code_3,
+        select#country_code_4,
+        select#country_code_5,
+        select#country_code_6,
+        select#country_code_7,
+        select#country_code_8 {
+            width: calc(30% - 5px);
+            margin-right: 10px;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .checkbox-container input[type="checkbox"],
+        .checkbox-container label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+ }
+        .accordion {
+            margin-bottom: 10px;
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid #e7e7e7;
+        }
+        .accordion .head {
+            background-color: #ccc;
+            color: #000;
+            cursor: pointer;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .accordion .body {
+            padding: 10px;
+            display: none;
+        }
+        .accordion .body.show {
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <img class="logo" src="https://www.outworx.co.za/wp-content/uploads/2022/08/Outworx_Logo_Main.png" alt="Outworx Logo">
+        <h1>Client Visit Information Form</h1>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="outworx_contact">Outworx Point of Contact</label>
+                <span class="subtitle">The person's name from Outworx that you are in regular contact with</span>
+                <input type="text" id="outworx_contact" name="Outworx Point of Contact">
+            </div>
+
+            <div class="form-group">
+                <label for="campaign">Campaign:</label>
+                <span class="subtitle">Name of the business</span>
+                <input type="text" id="campaign" name="Campaign">
+            </div>
+
+            <div class="form-group">
+                <label for="num_guests">Number of Guests:</label>
+                <span class="subtitle">Number of guests attending</span>
+                <select id="num_guests" name="Number of Guests">
+                    <option value="">Select</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+
+            <div id="guestFieldsContainer"></div>
+
+            <button type="button" id="submitButton" onclick="submitFormToPowerAutomate()">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("num_guests").addEventListener("change", generateGuestFields);
+
+        function generateGuestFields() {
+            var numGuests = parseInt(document.getElementById("num_guests").value);
+            var guestFieldsContainer = document.getElementById("guestFieldsContainer");
+            guestFieldsContainer.innerHTML = "";
+
+            for (var i = 1; i <= numGuests; i++) {
+                var guestDiv = document.createElement("div");
+ guestDiv.classList.add("accordion");
+
+                guestDiv.innerHTML = `
+                    <div class="head" onclick="toggleAccordion(this)">
+                        Guest ${i} Information
+                    </div>
+                    <div class="body">
+               
+                        <div class="form-group">
+                            <label for="guest_name_${i}">Guest Name (${i}):</label>
+                            <span class="subtitle">Name of the guest</span>
+                            <input type="text" id="guest_name_${i}" name="Guest Name (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest_email_${i}">Guest Email Address (${i}):</label>
+                            <span class="subtitle">Email address of the guest</span>
+                            <input type="email" id="guest_email_${i}" name="Guest Email Address (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest_mobile_${i}">Guest Mobile Number (${i}):</label>
+                            <div style="display: flex; align-items: center;">
+                                <select id="country_code_${i}" name="Country Code (${i})" onchange="toggleCustomDialingCodeInput(this, ${i})">
+                                    <option value="1">+1 (USA)</option>
+                                    <option value="44">+44 (UK)</option>
+                                    <option value="27">+27 (SA)</option>
+                                </select>
+                                <input type="tel" id="guest_mobile_${i}" name="Guest Mobile Number (${i})" pattern="[0-9]{10}" style="flex: 1;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sa_phone_${i}">Does the guest require a South African phone? (${i}):</label>
+                            <span class="subtitle">Whether the guest requires a South African phone or not</span>
+                            <select id="sa_phone_${i}" name="Does the guest require a South African phone? (${i})">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_airline_${i}">Arrival Airline (${i}):</label>
+                            <span class="subtitle">Name of the airline for arrival</span>
+                            <input type="text" id="arrival_airline_${i}" name="Arrival Airline (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_flight_${i}">Arrival Flight Number (${i}):</label>
+                            <span class="subtitle">Flight number for arrival</span>
+                            <input type="text" id="arrival_flight_${i}" name="Arrival Flight Number (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_date_${i}">Date of Flight Arrival (${i}):</label>
+                            <span class="subtitle">Date of arrival in South Africa</span> <br>
+                            <input type="date" id="arrival_date_${i}" name="Date of Flight Arrival (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_time_${i}">Time of Flight Arrival (${i}):</label>
+                            <span class="subtitle">Time of arrival in South Africa</span> <br>
+                            <input type="time" id="arrival_time_${i}" name="Time of Flight Arrival (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_airline_${i}">Departure Airline (${i}):</label>
+                            <span class="subtitle">Name of the airline for departure</span>
+                            <input type="text" id="departure_airline_${i}" name="Departure Airline (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_flight_${i}">Departure Flight Number (${i}):</label>
+                            <span class="subtitle">Flight number for departure</span>
+                            <input type="text" id="departure_flight_${i}" name="Departure Flight Number (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_date_${i}">Date of Flight Departure (${i}):</label>
+                            <span class="subtitle">Date of departure from South Africa</span> <br>
+                            <input type="date" id="departure_date_${i}" name="Date of Flight Departure (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="departure_time_${i}">Time of Flight Departure (${i}):</label>
+                            <span class="subtitle">Time of departure from South Africa</span> <br>
+                            <input type="time" id="departure_time_${i}" name="Time of Flight Departure (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="hotel_${i}">Name of the Hotel (${i}):</label>
+                            <span class="subtitle">Name of the hotel where the guest will stay</span>
+                            <input type="text" id="hotel_${i}" name="Name of the Hotel (${i})">
+                        </div>
+                        <div class="form-group">
+                            <label for="driver_required_${i}">Driver Required? (${i}):</label>
+                            <span class="subtitle">Whether a driver is required for the guest</span>
+                            <select id="driver_required_${i}" name="Driver Required? (${i})" onchange="toggleDriverTimes(this, ${i})">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                        <div id="driverTimes_${i}" style="display: none;">
+                            <div class="form-group">
+                                <label for="daily_collection_time_${i}">Daily Collection Time (${i}):</label>
+                                <span class="subtitle">Time for daily collection from the hotel</span> <br>
+                                <input type="time" id="daily_collection_time_${i}" name="Daily Collection Time (${i})">
+                            </div>
+                            <div class="form-group">
+                                <label for="daily_dropoff_time_${i}">Daily Drop off Time (${i}):</label>
+                                <span class="subtitle">Time for daily drop off at hotel</span> <br>
+                                <input type="time" id="daily_dropoff_time_${i}" name="Daily Drop off Time (${i})">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="special_requirements_${i}">Special Requirements (${i}):</label>
+                            <span class="subtitle">Dietary requirements</span> <br>
+                            <textarea id="special_requirements_${i}" name="Special Requirements (${i})" rows="4"></textarea> <p>
+                            <label for="activities_interested_${i}">Activities Interested In (${i}):</label>
+                            <span class="subtitle">Activities the guest is interested in</span> <br>
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="activity_ushaka_${i}" name="Activities Interested In (${i})[]" value="Ushaka Marine World (Shark Cage Diving/Snorkeling)">
+                                <label for="activity_ushaka_${i}">Ushaka Marine World (Shark Cage Diving/Snorkeling)</label> <br>
+                                <input type="checkbox" id="activity_zulu_${i}" name="Activities Interested In (${i})[]" value="Zulu Kingdom Tour">
+                                <label for="activity_zulu_${i}">Zulu Kingdom Tour</label> <br>
+                                <input type="checkbox" id="activity_segway_${i}" name="Activities Interested In (${i})[]" value="Segway Tour">
+                                <label for="activity_segway_${i}">Segway Tour</label> <br>
+                                <input type="checkbox" id="activity_safari_${i}" name="Activities Interested In (${i})[]" value="Safari Tour">
+                                <label for="activity_safari_${i}">Safari Tour</label>
+                            </div>
+                        </div>
+                    </div>
+</li>
+                        </ul>  
+                `;
+                guestFieldsContainer.appendChild(guestDiv);
+            }
+        }
+
+        function toggleDriverTimes(selectElement, index) {
+            var driverTimesDiv = document.getElementById(`driverTimes_${index}`);
+            if (selectElement.value === "yes") {
+                driverTimesDiv.style.display = "block";
+            } else {
+                driverTimesDiv.style.display = "none";
+            }
+        }
+function toggleAccordion(element) {
+            var body = element.nextElementSibling;
+            body.classList.toggle("show");
+        }
+
+
+        function submitFormToPowerAutomate() {
+            var outworxContact = document.getElementById("outworx_contact").value;
+            var campaign = document.getElementById("campaign").value;
+            var numGuests = document.getElementById("num_guests").value;
+
+            var guestInfo = [];
+
+            for (var i = 1; i <= numGuests; i++) {
+                var guest = {
+                    name: document.getElementById("guest_name_" + i).value,
+                    email: document.getElementById("guest_email_" + i).value,
+                    countryCode: document.getElementById("country_code_" + i).value,
+                    mobile: document.getElementById("guest_mobile_" + i).value,
+                    saPhone: document.getElementById("sa_phone_" + i).value,
+                    arrivalAirline: document.getElementById("arrival_airline_" + i).value,
+                    arrivalFlightNumber: document.getElementById("arrival_flight_" + i).value,
+                    arrivalDate: document.getElementById("arrival_date_" + i).value,
+                    arrivalTime: document.getElementById("arrival_time_" + i).value,
+                    departureAirline: document.getElementById("departure_airline_" + i).value,
+                    departureFlightNumber: document.getElementById("departure_flight_" + i).value,
+                    departureDate: document.getElementById("departure_date_" + i).value,
+                    departureTime: document.getElementById("departure_time_" + i).value,
+                    hotel: document.getElementById("hotel_" + i).value,
+                    driverRequired: document.getElementById("driver_required_" + i).value,
+                    specialRequirements: document.getElementById("special_requirements_" + i).value,
+                    activitiesInterested: getActivitiesInterested(i)
+                };
+
+                if (guest.driverRequired === "yes") {
+                    guest.dailyCollectionTime = document.getElementById("daily_collection_time_" + i).value;
+                    guest.dailyDropoffTime = document.getElementById("daily_dropoff_time_" + i).value;
+                }
+
+                guestInfo.push(guest);
+            }
+
+            var formData = {
+                outworxContact: outworxContact,
+                campaign: campaign,
+                numGuests: numGuests,
+                guests: guestInfo
+            };
+
+            var jsonData = JSON.stringify(formData);
+
+            sendJsonToPowerAutomate(jsonData);
+        }
+
+        function getActivitiesInterested(i) {
+            var activities = [];
+            var checkboxes = document.getElementsByName("Activities Interested In (" + i + ")[]");
+            checkboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    activities.push(checkbox.value);
+                }
+            });
+            return activities;
+        }
+
+        function sendJsonToPowerAutomate(jsonData) {
+            var endpoint = "https://prod-105.westeurope.logic.azure.com:443/workflows/ba96034e3d084c9cbeac129011bf7c31/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=y_f3WsxSVyHGOPsoZwbQV_w2Nmb-1eQ2yolV9AptyA8";
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            };
+
+            fetch(endpoint, requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response from Power Automate:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending data to Power Automate:', error);
+                });
+        }
+    </script>
+</body>
+</html>
