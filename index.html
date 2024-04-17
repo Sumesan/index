@@ -294,8 +294,7 @@
         }
 
 
-        function validateForm() {
-    // Fetch all required input fields
+ function validateForm() {
     var outworxContact = document.getElementById("outworx_contact");
     var campaign = document.getElementById("campaign");
     var numGuests = document.getElementById("num_guests");
@@ -305,18 +304,21 @@
     if (outworxContact.value.trim() === "") {
         isValid = false;
         alert("Please provide Outworx Point of Contact.");
+        return isValid; // Stop validation if Outworx Point of Contact is empty
     }
 
     // Check if Campaign is not empty
     if (campaign.value.trim() === "") {
         isValid = false;
         alert("Please provide Campaign.");
+        return isValid; // Stop validation if Campaign is empty
     }
 
     // Check if Number of Guests is selected
     if (numGuests.value === "") {
         isValid = false;
         alert("Please select Number of Guests.");
+        return isValid; // Stop validation if Number of Guests is not selected
     }
 
     // Iterate through each guest and validate their information
@@ -324,16 +326,36 @@
         var guestName = document.getElementById("guest_name_" + i);
         var guestEmail = document.getElementById("guest_email_" + i);
         var guestMobile = document.getElementById("guest_mobile_" + i);
+        var saPhone = document.getElementById("sa_phone_" + i);
+        var arrivalAirline = document.getElementById("arrival_airline_" + i);
+        var arrivalFlightNumber = document.getElementById("arrival_flight_" + i);
+        var arrivalDate = document.getElementById("arrival_date_" + i);
+        var arrivalTime = document.getElementById("arrival_time_" + i);
+        var departureAirline = document.getElementById("departure_airline_" + i);
+        var departureFlightNumber = document.getElementById("departure_flight_" + i);
+        var departureDate = document.getElementById("departure_date_" + i);
+        var departureTime = document.getElementById("departure_time_" + i);
+        var hotel = document.getElementById("hotel_" + i);
+        var driverRequired = document.getElementById("driver_required_" + i);
+        var specialRequirements = document.getElementById("special_requirements_" + i);
+        var activitiesInterested = document.querySelectorAll('input[name="Activities Interested In (' + i + ')[]"]:checked');
 
-        // Check if Guest Name, Email, and Mobile are not empty
-        if (guestName.value.trim() === "" || guestEmail.value.trim() === "" || guestMobile.value.trim() === "") {
+        // Check if any of the fields for this guest are empty
+        if (guestName.value.trim() === "" || guestEmail.value.trim() === "" || guestMobile.value.trim() === "" ||
+            saPhone.value === "" || arrivalAirline.value.trim() === "" || arrivalFlightNumber.value.trim() === "" ||
+            arrivalDate.value === "" || arrivalTime.value === "" || departureAirline.value.trim() === "" ||
+            departureFlightNumber.value.trim() === "" || departureDate.value === "" || departureTime.value === "" ||
+            hotel.value.trim() === "" || driverRequired.value === "" || specialRequirements.value.trim() === "" ||
+            activitiesInterested.length === 0) {
             isValid = false;
             alert("Please fill in all fields for Guest " + i + ".");
+            return isValid; // Stop validation if any field is empty for this guest
         }
     }
 
     return isValid;
 }
+
 
 function getActivitiesInterested(i) {
     var activitiesInterested = [];
