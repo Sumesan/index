@@ -154,6 +154,8 @@
 
             <button type="submit" id="submitButton">Submit</button>
         </form>
+        <div id="successMessage" style="display: none; text-align: center; color: green; margin-top: 10px;">
+    Form submitted successfully!
     </div>
     
     <script>
@@ -393,7 +395,12 @@ function sendJsonToPowerAutomate(jsonData) {
             console.error('Error sending data to Power Automate:', error);
         });
 }
+   var successMessage = document.getElementById("successMessage");
+    successMessage.style.display = "block";
 
+    // Reset form after submission
+    document.getElementById("registrationForm").reset();
+}
     </script>
 </body>
 </html>
