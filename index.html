@@ -80,49 +80,14 @@
             display: inline-block;
             margin-right: 10px;
         }
-        
-        /* Updated CSS for date and time input fields */
-        input[type="date"],
-        input[type="time"],
-        textarea#special_requirements_1,
-        textarea#special_requirements_2,
-        textarea#special_requirements_3,
-        textarea#special_requirements_4,
-        textarea#special_requirements_5,
-        textarea#special_requirements_6,
-        textarea#special_requirements_7,
-        textarea#special_requirements_8 {
-            width: calc(100% - 12px);
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-family: Arial, sans-serif; /* Change the font family as needed */
-        }
-
-        /* Updated CSS for special requirements textarea */
-        textarea#special_requirements_1,
-        textarea#special_requirements_2,
-        textarea#special_requirements_3,
-        textarea#special_requirements_4,
-        textarea#special_requirements_5,
-        textarea#special_requirements_6,
-        textarea#special_requirements_7,
-        textarea#special_requirements_8 {
-            width: calc(100% - 12px);
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-family: Arial, sans-serif; /* Change the font family as needed */
-            font-size: 16px; /* Change the font size as needed */
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <img class="logo" src="https://www.outworx.co.za/wp-content/uploads/2022/08/Outworx_Logo_Main.png" alt="Outworx Logo">
         <h1>Client Visit Information Form</h1>
-        <form id="registrationForm" onsubmit="submitForm(event)">
-        <div class="form-group">
+        <form id="registrationForm">
+            <div class="form-group">
                 <label for="outworx_contact">Outworx Point of Contact</label>
                 <span class="subtitle">The person's name from Outworx that you are in regular contact with</span>
                 <input type="text" id="outworx_contact" name="Outworx Point of Contact">
@@ -152,14 +117,12 @@
 
             <div id="guestFieldsContainer"></div>
 
-            <button type="submit" id="submitButton">Submit</button>
+            <button type="button" id="submitButton" onclick="submitFormToPowerAutomate()">Submit</button>
         </form>
-        <div id="successMessage" style="display: none; text-align: center; color: green; margin-top: 10px;">
-    Form submitted successfully!
     </div>
-    
+
     <script>
-    document.getElementById("num_guests").addEventListener("change", generateGuestFields);
+        document.getElementById("num_guests").addEventListener("change", generateGuestFields);
 
         function generateGuestFields() {
             var numGuests = parseInt(document.getElementById("num_guests").value);
@@ -188,9 +151,15 @@
                                     <option value="1">+1 (USA)</option>
                                     <option value="44">+44 (UK)</option>
                                     <option value="27">+27 (SA)</option>
+                                    <option value="other">Other</option>
                                 </select>
                                 <input type="tel" id="guest_mobile_${i}" name="Guest Mobile Number (${i})" pattern="[0-9]{10}" style="flex: 1;">
                             </div>
+                        </div>
+                        <div class="form-group" id="custom_dialing_code_${i}" style="display: none;">
+                            <label for="custom_dialing_code_input_${i}">Custom Dialing Code:</label>
+                            <span class="subtitle">Custom dialing code if 'Other' is selected</span>
+                            <input type="text" id="custom_dialing_code_input_${i}" name="Custom Dialing Code (${i})">
                         </div>
                         <div class="form-group">
                             <label for="sa_phone_${i}">Does the guest require a South African phone? (${i}):</label>
@@ -273,7 +242,7 @@
                             <span class="subtitle">Activities the guest is interested in</span> <br>
                             <div class="checkbox-container">
                                 <input type="checkbox" id="activity_ushaka_${i}" name="Activities Interested In (${i})[]" value="Ushaka Marine World (Shark Cage Diving/Snorkeling)">
-                                <label for="activity_ushaka_${i}">Ushaka Marine World (Shark Cage Diving)</label> <br>
+                                <label for="activity_ushaka_${i}">Ushaka Marine World (Shark Cage Diving/Snorkeling)</label> <br>
                                 <input type="checkbox" id="activity_zulu_${i}" name="Activities Interested In (${i})[]" value="Zulu Kingdom Tour">
                                 <label for="activity_zulu_${i}">Zulu Kingdom Tour</label> <br>
                                 <input type="checkbox" id="activity_segway_${i}" name="Activities Interested In (${i})[]" value="Segway Tour">
@@ -287,7 +256,8 @@
                 guestFieldsContainer.appendChild(guestDiv);
             }
         }
-         function toggleDriverTimes(selectElement, index) {
+
+        function toggleDriverTimes(selectElement, index) {
             var driverTimesDiv = document.getElementById(`driverTimes_${index}`);
             if (selectElement.value === "yes") {
                 driverTimesDiv.style.display = "block";
@@ -295,115 +265,99 @@
                 driverTimesDiv.style.display = "none";
             }
         }
-        function submitForm(event) {
-    event.preventDefault(); // Prevent form submission
-      
-    
-    // Get values from the main form
-    var outworxContact = document.getElementById("outworx_contact").value;
-    var campaign = document.getElementById("campaign").value;
-    var numGuests = document.getElementById("num_guests").value;
-    
-    // Array to store guest information
-    var guestInfo = [];
-    
-    // Loop through each guest section
-    for (var i = 1; i <= numGuests; i++) {
-        var guest = {
-            name: document.getElementById("guest_name_" + i).value,
-            email: document.getElementById("guest_email_" + i).value,
-            countryCode: document.getElementById("country_code_" + i).value,
-            mobile: document.getElementById("guest_mobile_" + i).value,
-            saPhone: document.getElementById("sa_phone_" + i).value,
-            arrivalAirline: document.getElementById("arrival_airline_" + i).value,
-            arrivalFlightNumber: document.getElementById("arrival_flight_" + i).value,
-            arrivalDate: document.getElementById("arrival_date_" + i).value,
-            arrivalTime: document.getElementById("arrival_time_" + i).value,
-            departureAirline: document.getElementById("departure_airline_" + i).value,
-            departureFlightNumber: document.getElementById("departure_flight_" + i).value,
-            departureDate: document.getElementById("departure_date_" + i).value,
-            departureTime: document.getElementById("departure_time_" + i).value,
-            hotel: document.getElementById("hotel_" + i).value,
-            driverRequired: document.getElementById("driver_required_" + i).value,
-            specialRequirements: document.getElementById("special_requirements_" + i).value,
-            activitiesInterested: getActivitiesInterested(i)
-        };
-        
-        // Check if driver times are required
-        if (guest.driverRequired === "yes") {
-            guest.dailyCollectionTime = document.getElementById("daily_collection_time_" + i).value;
-            guest.dailyDropoffTime = document.getElementById("daily_dropoff_time_" + i).value;
-        }
-        
-        // Push guest information to array
-        guestInfo.push(guest);
-    }
-    
-    // Object to hold all form data
-    var formData = {
-        outworxContact: outworxContact,
-        campaign: campaign,
-        numGuests: numGuests,
-        guests: guestInfo
-    };
-    
-    // Convert formData to JSON
-    var jsonData = JSON.stringify(formData);
 
-    // Send jsonData to Power Automate
-    // You will need to implement this part according to your specific setup
-    sendJsonToPowerAutomate(jsonData);
-}
-
-// Function to get activities interested in
-function getActivitiesInterested(i) {
-    var activities = [];
-    var checkboxes = document.getElementsByName("Activities Interested In (" + i + ")[]");
-    checkboxes.forEach(function(checkbox) {
-        if (checkbox.checked) {
-            activities.push(checkbox.value);
-        }
-    });
-    return activities;
-}
-// Function to send JSON data to Power Automate
-function sendJsonToPowerAutomate(jsonData) {
-    // URL of the Power Automate HTTP endpoint
-    var endpoint = "https://prod-105.westeurope.logic.azure.com:443/workflows/ba96034e3d084c9cbeac129011bf7c31/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=y_f3WsxSVyHGOPsoZwbQV_w2Nmb-1eQ2yolV9AptyA8";
-
-    // Fetch options
-    var requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: jsonData
-    };
-
-    // Send HTTP POST request
-    fetch(endpoint, requestOptions)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+        function toggleCustomDialingCodeInput(selectElement, index) {
+            var customDialingCodeInput = document.getElementById(`custom_dialing_code_${index}`);
+            if (selectElement.value === "other") {
+                customDialingCodeInput.style.display = "block";
+            } else {
+                customDialingCodeInput.style.display = "none";
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Response from Power Automate:', data);
-        })
-        .catch(error => {
-            console.error('Error sending data to Power Automate:', error);
-        });
-}
-   var successMessage = document.getElementById("successMessage");
-    successMessage.style.display = "block";
-
-    // Reset form after submission
-    document.getElementById("registrationForm").reset();
-}
-        document.getElementById("num_guests").addEventListener("change", generateGuestFields);
         }
 
+        function submitFormToPowerAutomate() {
+            var outworxContact = document.getElementById("outworx_contact").value;
+            var campaign = document.getElementById("campaign").value;
+            var numGuests = document.getElementById("num_guests").value;
+
+            var guestInfo = [];
+
+            for (var i = 1; i <= numGuests; i++) {
+                var guest = {
+                    name: document.getElementById("guest_name_" + i).value,
+                    email: document.getElementById("guest_email_" + i).value,
+                    countryCode: document.getElementById("country_code_" + i).value,
+                    mobile: document.getElementById("guest_mobile_" + i).value,
+                    saPhone: document.getElementById("sa_phone_" + i).value,
+                    arrivalAirline: document.getElementById("arrival_airline_" + i).value,
+                    arrivalFlightNumber: document.getElementById("arrival_flight_" + i).value,
+                    arrivalDate: document.getElementById("arrival_date_" + i).value,
+                    arrivalTime: document.getElementById("arrival_time_" + i).value,
+                    departureAirline: document.getElementById("departure_airline_" + i).value,
+                    departureFlightNumber: document.getElementById("departure_flight_" + i).value,
+                    departureDate: document.getElementById("departure_date_" + i).value,
+                    departureTime: document.getElementById("departure_time_" + i).value,
+                    hotel: document.getElementById("hotel_" + i).value,
+                    driverRequired: document.getElementById("driver_required_" + i).value,
+                    specialRequirements: document.getElementById("special_requirements_" + i).value,
+                    activitiesInterested: getActivitiesInterested(i)
+                };
+
+                if (guest.driverRequired === "yes") {
+                    guest.dailyCollectionTime = document.getElementById("daily_collection_time_" + i).value;
+                    guest.dailyDropoffTime = document.getElementById("daily_dropoff_time_" + i).value;
+                }
+
+                guestInfo.push(guest);
+            }
+
+            var formData = {
+                outworxContact: outworxContact,
+                campaign: campaign,
+                numGuests: numGuests,
+                guests: guestInfo
+            };
+
+            var jsonData = JSON.stringify(formData);
+
+            sendJsonToPowerAutomate(jsonData);
+        }
+
+        function getActivitiesInterested(i) {
+            var activities = [];
+            var checkboxes = document.getElementsByName("Activities Interested In (" + i + ")[]");
+            checkboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    activities.push(checkbox.value);
+                }
+            });
+            return activities;
+        }
+
+        function sendJsonToPowerAutomate(jsonData) {
+            var endpoint = "https://prod-105.westeurope.logic.azure.com:443/workflows/ba96034e3d084c9cbeac129011bf7c31/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=y_f3WsxSVyHGOPsoZwbQV_w2Nmb-1eQ2yolV9AptyA8";
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            };
+
+            fetch(endpoint, requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response from Power Automate:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending data to Power Automate:', error);
+                });
+        }
     </script>
 </body>
 </html>
