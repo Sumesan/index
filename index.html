@@ -186,15 +186,9 @@
                                     <option value="1">+1 (USA)</option>
                                     <option value="44">+44 (UK)</option>
                                     <option value="27">+27 (SA)</option>
-                                    <option value="other">Other</option>
                                 </select>
                                 <input type="tel" id="guest_mobile_${i}" name="Guest Mobile Number (${i})" pattern="[0-9]{10}" style="flex: 1;">
                             </div>
-                        </div>
-                        <div class="form-group" id="custom_dialing_code_${i}" style="display: none;">
-                            <label for="custom_dialing_code_input_${i}">Custom Dialing Code:</label>
-                            <span class="subtitle">Custom dialing code if 'Other' is selected</span>
-                            <input type="text" id="custom_dialing_code_input_${i}" name="Custom Dialing Code (${i})">
                         </div>
                         <div class="form-group">
                             <label for="sa_phone_${i}">Does the guest require a South African phone? (${i}):</label>
@@ -299,16 +293,6 @@
                 driverTimesDiv.style.display = "none";
             }
         }
-
-        function toggleCustomDialingCodeInput(selectElement, index) {
-            var customDialingCodeInput = document.getElementById(`custom_dialing_code_${index}`);
-            if (selectElement.value === "other") {
-                customDialingCodeInput.style.display = "block";
-            } else {
-                customDialingCodeInput.style.display = "none";
-            }
-        }
-        
         function submitForm(event) {
     event.preventDefault(); // Prevent form submission
       
