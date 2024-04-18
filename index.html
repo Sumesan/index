@@ -258,7 +258,7 @@
                         <div class="form-group">
                             <label for="driver_required_${i}">Driver Required? (${i}):</label>
                             <span class="subtitle">Whether a driver is required for collection from airport</span>
-                            <select id="driver_required_${i}" name="Driver Required? (${i})" onchange="toggleDriverTimes(this, ${i})">
+                            <select id="driver_required_${i}" name="Driver Required? (${i})">
                                 <option value="no">No</option>
                                 <option value="yes">Yes</option>
                             </select>
@@ -395,6 +395,7 @@ function getActivitiesInterested(i) {
                 departureDate: document.getElementById("departure_date_" + i).value,
                 departureTime: document.getElementById("departure_time_" + i).value,
                 hotel: document.getElementById("hotel_" + i).value,
+                driverRequired: document.getElementById("driver_required_" + i).value,
                 specialRequirements: document.getElementById("special_requirements_" + i).value,
                 activitiesInterested: getActivitiesInterested(i)
             };
